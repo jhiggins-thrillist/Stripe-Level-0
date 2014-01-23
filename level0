@@ -5,15 +5,70 @@
 # will automatically download this dictionary for you if you don't
 # have it already.
 
-path = ARGV.length > 0 ? ARGV[0] : '/usr/share/dict/words'
-entries = File.read(path).split("\n")
+path = ARGV.length > 0 ? ARGV[0] : '/usr/share/dict/words' #'/Users/jhiggins/Code/Stripe/level0/test/data/words-6b898d7c48630be05b72b3ae07c5be6617f90d8e'
 
-contents = $stdin.read
-output = contents.gsub(/[^ \n]+/) do |word|
-  if entries.include?(word.downcase)
-    word
-  else
-    "<#{word}>"
-  end
+require 'trie'
+require 'set'
+
+class Haxors
+    attr_accessor :entries, :input
+
+    def initialize(dictionary, input)
+        @entries = dictionary
+        @input = input
+        self.run
+    end
+
+    def run
+
+        s = 0
+        e = 0
+        c = 0
+        word = nil
+
+        @input.each_char do |letter|
+
+            if /^[\n ]$/ !~ letter
+                e = e + 1
+            else
+
+                if e > s
+                    word = @input.slice(s, e - s)
+
+                    if @entries[word.downcase] === 1 #!!@entries.find(word.downcase) #[word.downcase] == 1
+                        print word
+                    else
+                        print '<' + input[s..(e-1)] + '>'
+                    end
+
+                end
+
+                s = c + 1
+                e = s
+                print letter
+            end
+
+            c = c + 1
+        end
+
+    end
+
 end
-print output
+
+trie = Hash.new
+#before = Time.now
+#trie = Trie.new
+#trie = Marshal.load(File.open('./trie.txt', 'r'))
+
+File.readlines(path).each do |word|
+    #trie.insert(word.slice(0, word.length - 1).downcase, true)
+    trie[word.slice(0, word.length - 1).downcase] = 1
+end
+#p Time.now - before
+#p trie
+
+#before = Time.now;Haxors.new(trie, a.read);print Time.now - before
+Haxors.new(trie, $stdin.read)
+#p j.entries
+#Marshal.dump(trie, File.open('./trie.txt', 'w'))
+

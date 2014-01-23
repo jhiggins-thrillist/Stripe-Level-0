@@ -18,35 +18,15 @@ class Haxors
 
     def run
 
-        s = 0
-        e = 0
-        c = 0
-        word = nil
-
-        @input.each_char do |letter|
-
-            if /^[\n ]$/ !~ letter
-                e = e + 1
+        output = @input.gsub(/[^ \n]+/) do |word|
+            if @entries[word.downcase]
+                word
             else
-
-                if e > s
-                    word = @input.slice(s, e - s)
-
-                    if @entries[word.downcase] === 1 #!!@entries.find(word.downcase) #[word.downcase] == 1
-                        print word
-                    else
-                        print '<' + input[s..(e-1)] + '>'
-                    end
-
-                end
-
-                s = c + 1
-                e = s
-                print letter
+                "<#{word}>"
             end
-
-            c = c + 1
         end
+        print output
+
 
     end
 
@@ -59,7 +39,7 @@ trie = Hash.new
 
 File.readlines(path).each do |word|
     #trie.insert(word.slice(0, word.length - 1).downcase, true)
-    trie[word.slice(0, word.length - 1).downcase] = 1
+    trie[word.slice(0, word.length - 1)] = 1
 end
 #p Time.now - before
 #p trie

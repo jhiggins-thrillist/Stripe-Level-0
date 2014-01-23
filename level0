@@ -7,9 +7,6 @@
 
 path = ARGV.length > 0 ? ARGV[0] : '/usr/share/dict/words' #'/Users/jhiggins/Code/Stripe/level0/test/data/words-6b898d7c48630be05b72b3ae07c5be6617f90d8e'
 
-require 'trie'
-require 'set'
-
 class Haxors
     attr_accessor :entries, :input
 
